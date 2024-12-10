@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  gateway001:
+    build:
+      context: ./
+      dockerfile: DockerFileGateway.dev
+    ports:
+      - "8080:8080"
+    environment:
+      ASW_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "test"
+      AWS_SECRET_ACCESS_KEY: "test"
+    entrypoint: sh -c './liveComments gateway --port 8080'
+
