@@ -1,23 +1,22 @@
-package adapters
+package gateway
 
 import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"livecomments/gateway"
 	"log"
 	"net/http"
 )
 
 type WebAdapter struct {
-	serviceContainer *gateway.ServiceContainer
+	subscriptHandler func(c *gin.Context)
 	port             string
 	server           *http.Server
 }
 
-func NewWebAdapter(port string, serviceContainer *gateway.ServiceContainer) *WebAdapter {
+func NewWebAdapter(port string, subscriptHandler func(c *gin.Context)) *WebAdapter {
 	return &WebAdapter{
-		serviceContainer: serviceContainer,
+		subscriptHandler: subscriptHandler,
 		port:             port,
 	}
 }
@@ -26,7 +25,7 @@ func (w *WebAdapter) Start(_ context.Context) error {
 	router := gin.New()
 	router.Use(gin.Recovery())
 
-	router.GET("/subscribe", w.serviceContainer.SubscriptionHandler)
+	router.GET("/subscribe", w.subscriptHandler)
 
 	w.server = &http.Server{
 		Addr:    fmt.Sprintf(":%s", w.port),

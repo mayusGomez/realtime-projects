@@ -4,7 +4,7 @@ services:
   gateway001:
     build:
       context: ./
-      dockerfile: DockerFileGateway.dev
+      dockerfile: DockerFileLiveComments.dev
     ports:
       - "8080:8080"
     environment:
@@ -13,3 +13,24 @@ services:
       AWS_SECRET_ACCESS_KEY: "test"
     entrypoint: sh -c './liveComments gateway --port 8080'
 
+  dispatcher001:
+    build:
+      context: ./
+      dockerfile: DockerFileLiveComments.dev
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: "8081"
+      RABBIT_MQ: "amqp://guest:guest@rabbitmq:5672/"
+      queues: "gateway001"
+    entrypoint: sh -c './liveComments dispatcher'
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest

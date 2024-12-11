@@ -4,18 +4,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	rootCmd = &cobra.Command{
-		Use:   "live-comments-service",
-		Short: "Live Comments Service",
-	}
-
-	Port string
-)
+var rootCmd = &cobra.Command{
+	Use:   "live-comments-service",
+	Short: "Live Comments Service",
+}
 
 func init() {
-	startCmd := newGatewayCobraCommand()
-	rootCmd.AddCommand(startCmd)
+	gatewayCmd := newGatewayCobraCommand()
+	dispatcherCmd := newDispatcherCobraCommand()
+	
+	rootCmd.AddCommand(gatewayCmd)
+	rootCmd.AddCommand(dispatcherCmd)
 }
 
 // Execute executes the root command of the application
