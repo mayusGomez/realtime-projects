@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"livecomments/gateway/application"
 	"livecomments/gateway/interfaces/web"
+	"livecomments/pkg/adapters"
 )
 
 type ServiceContainer struct {
@@ -17,4 +18,15 @@ func NewService() *ServiceContainer {
 	return &ServiceContainer{
 		SubscriptionHandler: subsHandler.Handle,
 	}
+}
+
+func (sc *ServiceContainer) Run(port string) error {
+	appAdapter := adapters.NewAppAdapters()
+	appAdapter.AddAdapters(
+		NewWebAdapter(port, sc.SubscriptionHandler),
+	)
+
+	appAdapter.Run()
+
+	return nil
 }
