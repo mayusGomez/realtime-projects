@@ -1,6 +1,9 @@
 package application
 
-import "livecomments/dispatcher/domain"
+import (
+	"livecomments/dispatcher/domain"
+	"log"
+)
 
 type Comment struct {
 	gatewayConfig domain.GatewayConfig
@@ -13,6 +16,7 @@ func NewComment(gatewayConfig domain.GatewayConfig, asyncComm domain.AsyncCommun
 
 func (g *Comment) PostComment(connectionId, video, comment string) error {
 	queues := g.gatewayConfig.GetQueues(video)
+	log.Printf("post comment: %s video: %s queue: %v", comment, video, queues)
 
 	message := domain.CommentMessage{
 		ConnectionId: connectionId,

@@ -3,6 +3,7 @@ package web
 import (
 	"github.com/gin-gonic/gin"
 	"livecomments/dispatcher/domain"
+	"log"
 	"net/http"
 )
 
@@ -28,6 +29,8 @@ func (handler *CommentHandler) Handle(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	log.Printf("post comment %+v", req)
 
 	err := handler.postCommentCmd.PostComment(req.ConnectionId, req.Video, req.Comment)
 	if err != nil {

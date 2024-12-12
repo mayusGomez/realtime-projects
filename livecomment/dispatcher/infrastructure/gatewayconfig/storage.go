@@ -1,6 +1,8 @@
 package gatewayconfig
 
-import "sync"
+import (
+	"sync"
+)
 
 type Storage struct {
 	mu   sync.RWMutex
@@ -19,10 +21,11 @@ func (s *Storage) Store(queue, video string) {
 
 	videoSet, ok := s.data[video]
 	if !ok {
-		s.data[video] = make(map[string]struct{})
+		videoSet = make(map[string]struct{})
 	}
 
 	videoSet[queue] = struct{}{}
+	s.data[video] = videoSet
 }
 
 func (s *Storage) Remove(queue, video string) {
