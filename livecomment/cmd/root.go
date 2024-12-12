@@ -12,9 +12,11 @@ var rootCmd = &cobra.Command{
 func init() {
 	gatewayCmd := newGatewayCobraCommand()
 	dispatcherCmd := newDispatcherCobraCommand()
-	
+	generator := newGeneratorCommand()
+
 	rootCmd.AddCommand(gatewayCmd)
 	rootCmd.AddCommand(dispatcherCmd)
+	rootCmd.AddCommand(generator)
 }
 
 // Execute executes the root command of the application

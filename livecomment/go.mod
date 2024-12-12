@@ -1,8 +1,11 @@
 module livecomments
 
-go 1.21
+go 1.22
+
+toolchain go1.23.3
 
 require (
+	github.com/brianvoe/gofakeit/v7 v7.1.2
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.6.0
