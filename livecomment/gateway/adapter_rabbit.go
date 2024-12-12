@@ -37,6 +37,7 @@ func (r *RabbitMQAdapter) Start(_ context.Context) error {
 
 	go func() {
 		for d := range msgs {
+			log.Printf("Received a message: %s", d.Body)
 			err = r.newCommentsHandler(&d)
 			if err != nil {
 				// Don't handle retries, only log the error
@@ -50,6 +51,6 @@ func (r *RabbitMQAdapter) Start(_ context.Context) error {
 
 func (r *RabbitMQAdapter) Stop(_ context.Context) error {
 	r.rabbitClient.Close()
-	
+
 	return nil
 }

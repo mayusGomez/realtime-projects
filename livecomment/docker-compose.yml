@@ -11,6 +11,7 @@ services:
       PORT: "8080"
       QUEUE: "gateway001"
       RABBIT_MQ: "amqp://guest:guest@rabbitmq:5672/"
+      DISPATCHER_URL: "http://dispatcher001:8081"
     entrypoint: sh -c './liveComments gateway'
 
   dispatcher001:

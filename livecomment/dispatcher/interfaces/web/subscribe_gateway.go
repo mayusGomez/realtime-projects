@@ -3,6 +3,7 @@ package web
 import (
 	"github.com/gin-gonic/gin"
 	"livecomments/dispatcher/domain"
+	"log"
 	"net/http"
 )
 
@@ -29,6 +30,8 @@ func (gw *SubscribeGateway) Handle(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	log.Printf("Received GatewaySubscription %+v", req)
 
 	var err error
 	if req.IsSubscription != nil && !*req.IsSubscription {

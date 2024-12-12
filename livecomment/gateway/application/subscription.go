@@ -2,6 +2,7 @@ package application
 
 import (
 	"errors"
+	"livecomments/gateway/domain"
 	"log"
 	"sync"
 )
@@ -9,11 +10,15 @@ import (
 type SubscriptionService struct {
 	mu                sync.RWMutex
 	videoSubscription map[string]map[string]chan string
+	dispatcher        domain.DispatcherSubscriber
+	queue             string
 }
 
-func NewSubscriptionService() *SubscriptionService {
+func NewSubscriptionService(dispatcher domain.DispatcherSubscriber, queue string) *SubscriptionService {
 	return &SubscriptionService{
 		videoSubscription: make(map[string]map[string]chan string),
+		dispatcher:        dispatcher,
+		queue:             queue,
 	}
 }
 
@@ -23,6 +28,10 @@ func (s *SubscriptionService) Subscribe(video, connectionId string) (chan string
 
 	videoSubscription, ok := s.videoSubscription[video]
 	if !ok {
+		err := s.dispatcher.Subscribe(video, s.queue)
+		if err != nil {
+			return nil, err
+		}
 		videoSubscription = make(map[string]chan string)
 	}
 
@@ -47,6 +56,8 @@ func (s *SubscriptionService) Unsubscribe(video, connectionId string) {
 	if !ok {
 		return
 	}
+
+	// TODO: include unsubscribe video from dispatcher
 
 	connection, ok := videoSubscription[connectionId]
 	if !ok {

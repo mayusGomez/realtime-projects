@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rabbitmq/amqp091-go"
 	"livecomments/gateway/application"
+	"livecomments/gateway/infrastructure/dispatcher"
 	"livecomments/gateway/interfaces/rabbit"
 	"livecomments/gateway/interfaces/web"
 	"livecomments/pkg/adapters"
@@ -14,8 +15,9 @@ type ServiceContainer struct {
 	consumerHandler     func(rabbitMsg *amqp091.Delivery) error
 }
 
-func NewService() *ServiceContainer {
-	subsSvc := application.NewSubscriptionService()
+func NewService(dispatcherURL, queue string) *ServiceContainer {
+	dispatcherClient := dispatcher.NewDispatcher(dispatcherURL)
+	subsSvc := application.NewSubscriptionService(dispatcherClient, queue)
 	subsHandler := web.NewSubscriptionHandler(subsSvc.Subscribe, subsSvc.Unsubscribe)
 	consumerHandler := rabbit.NewCommentsHandler(subsSvc)
 

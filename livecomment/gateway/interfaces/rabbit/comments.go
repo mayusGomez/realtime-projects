@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/rabbitmq/amqp091-go"
 	"livecomments/gateway/domain"
+	"log"
 )
 
 type CommentMessage struct {
@@ -28,6 +29,8 @@ func (c *Comments) Handle(rabbitMsg *amqp091.Delivery) error {
 	if err != nil {
 		return err
 	}
+
+	log.Printf("Received a message: %v", msg)
 
 	err = c.publishMsg.PublishComment(msg.Video, msg.Message)
 	if err != nil {

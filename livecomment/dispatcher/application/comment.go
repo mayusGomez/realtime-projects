@@ -16,7 +16,7 @@ func NewComment(gatewayConfig domain.GatewayConfig, asyncComm domain.AsyncCommun
 
 func (g *Comment) PostComment(connectionId, video, comment string) error {
 	queues := g.gatewayConfig.GetQueues(video)
-	log.Printf("post comment: %s video: %s queue: %v", comment, video, queues)
+	log.Printf("post comment: %s video: %s queues: %v", comment, video, queues)
 
 	message := domain.CommentMessage{
 		ConnectionId: connectionId,

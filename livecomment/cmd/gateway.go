@@ -12,7 +12,7 @@ type GatewayCommand struct{}
 func (c *GatewayCommand) Execute() error {
 	figure.NewColorFigure("Gateway server", "doom", "blue", false).Print()
 
-	serviceContainer := gateway.NewService()
+	serviceContainer := gateway.NewService(os.Getenv("DISPATCHER_URL"), os.Getenv("QUEUE"))
 	err := serviceContainer.Run(os.Getenv("PORT"), os.Getenv("RABBIT_MQ"), os.Getenv("QUEUE"))
 	if err != nil {
 		return err
