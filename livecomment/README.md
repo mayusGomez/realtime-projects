@@ -9,32 +9,19 @@ This project implements a simple **Live Comment System**, inspired by the exerci
 The system is composed of the following components:
 
 1. **Gateway Service** (Go):
-    - Exposes an SSE endpoint (`/subscribe`) for clients to receive live comments.
+    - Exposes an SSE endpoint (`/subscribe`) for clients to receive live comments. When a subscription is established for a video, this service create a subscription in dispatcher service
     - Manages connections using channels.
-    - Listens for messages from the Dispatcher via RabbitMQ and forwards them to connected clients.
+    - Listens for messages from the Dispatcher through RabbitMQ and forwards them to connected clients of the same video
 
 2. **Dispatcher Service**:
-    - Simulates the generation of comments for multiple videos (e.g., videos `A`, `B`, and `C`).
-    - Publishes comments to RabbitMQ for the Gateway to distribute.
+    - Receives comments by video
+    - Routing of every comment to the gateway according to it subscription
 
 3. **RabbitMQ**:
     - Acts as a message broker, facilitating communication between the Dispatcher and Gateway services.
 
 4. **Simulated Comment Generator**:
-    - Produces random comments for videos `A`, `B`, and `C`, and sends them to the Dispatcher.
-
----
-
-## **Features**
-
-- **Real-Time Comments**:
-    - Clients can subscribe to comments for specific videos using SSE.
-
-- **RabbitMQ Integration**:
-    - Decouples the Dispatcher and Gateway services, ensuring scalability and reliability.
-
-- **Automatic Connection Handling**:
-    - The Gateway service closes the SSE connection when the browser or client disconnects.
+    - Produces random comments for videos, and sends them to the Dispatcher.
 
 ---
 
@@ -44,6 +31,7 @@ The system is composed of the following components:
 
 - Docker and Docker Compose installed on your machine.
 - A browser or tool like `curl` to test the SSE endpoint.
+- Go 1.23 installed to execute the simulation of comments
 
 ---
 
@@ -51,26 +39,26 @@ The system is composed of the following components:
 
 1. **Clone the repository**:
    ```
-   git clone <repository-url>
+   git clone https://github.com/mayusGomez/realtime-projects.git
    cd realtime_projects/livecomment
    ```
 2. **Start the services**:
    Run the following command to start all services using Docker Compose:
    ```bash
-   docker-compose up -d
+   make build
+   make run
    ```
-3. **Access the Gateway SSE Endpoint:**
-   Open a browser and navigate to the following URL to subscribe to a video stream
-   ```http://localhost:8080/subscribe?video=a```
-   Replace `a` with `b` or `c` to subscribe to comments for other videos.
+   
+3. **Generate comments:**
+   Run the command to generate random comments
+   ```bash
+   make generate-comments
+   ```
+   Open the link which the console shows, something similar to  ```http://localhost:8080/subscribe?video=[uuid]```
    When the browser is closed, the connection to the server will automatically terminate.
 
-
-### **Simulated Comments**
-A background service simulates comment generation for videos A, B, and C. This ensures a steady stream of comments to demonstrate the functionality.
-
 ### **Stopping the Services**
-To stop all running services, use the following command: `docker-compose down`
+To stop all running services, use the following command: `make stop`
 
 ### **License** 
 This project is open-source and available under the MIT License.
