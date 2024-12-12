@@ -12,6 +12,9 @@ services:
       QUEUE: "gateway001"
       RABBIT_MQ: "amqp://guest:guest@rabbitmq:5672/"
       DISPATCHER_URL: "http://dispatcher001:8081"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     entrypoint: sh -c './liveComments gateway'
 
   dispatcher001:
@@ -24,6 +27,9 @@ services:
       PORT: "8081"
       RABBIT_MQ: "amqp://guest:guest@rabbitmq:5672/"
       QUEUES: "gateway001"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     entrypoint: sh -c './liveComments dispatcher'
 
   rabbitmq:
@@ -35,3 +41,9 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmqctl status || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
