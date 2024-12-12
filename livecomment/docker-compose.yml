@@ -9,7 +9,9 @@ services:
       - "8080:8080"
     environment:
       PORT: "8080"
-    entrypoint: sh -c './liveComments gateway --port 8080'
+      QUEUE: "gateway001"
+      RABBIT_MQ: "amqp://guest:guest@rabbitmq:5672/"
+    entrypoint: sh -c './liveComments gateway'
 
   dispatcher001:
     build:
