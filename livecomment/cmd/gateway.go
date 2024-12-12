@@ -4,9 +4,8 @@ import (
 	"github.com/common-nighthawk/go-figure"
 	"github.com/spf13/cobra"
 	"livecomments/gateway"
+	"os"
 )
-
-var Port string
 
 type GatewayCommand struct{}
 
@@ -14,7 +13,7 @@ func (c *GatewayCommand) Execute() error {
 	figure.NewColorFigure("Gateway server", "doom", "blue", false).Print()
 
 	serviceContainer := gateway.NewService()
-	err := serviceContainer.Run(Port)
+	err := serviceContainer.Run(os.Getenv("PORT"), os.Getenv("RABBIT_MQ"), os.Getenv("QUEUE"))
 	if err != nil {
 		return err
 	}
@@ -33,11 +32,5 @@ func newGatewayCobraCommand() *cobra.Command {
 		},
 	}
 
-	initGatewayFlags(cmd)
-
 	return cmd
-}
-
-func initGatewayFlags(cmd *cobra.Command) {
-	cmd.Flags().StringVarP(&Port, "port", "p", "8080", "Port to listen on")
 }

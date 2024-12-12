@@ -44,6 +44,23 @@ func (rc *RabbitMQClient) Close() {
 	}
 }
 
+func (rc *RabbitMQClient) SubscribeToQueue(queue string) (<-chan amqp091.Delivery, error) {
+	msgs, err := rc.ch.Consume(
+		queue,
+		"",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return msgs, nil
+}
+
 func declareQueues(ch *amqp091.Channel, queues []string) error {
 	for _, queue := range queues {
 		log.Printf("declaring queue %q", queue)
@@ -64,8 +81,8 @@ func declareQueues(ch *amqp091.Channel, queues []string) error {
 	return nil
 }
 
-func (r *RabbitMQClient) Publish(queue string, body []byte) error {
-	err := r.ch.Publish(
+func (rc *RabbitMQClient) Publish(queue string, body []byte) error {
+	err := rc.ch.Publish(
 		"",
 		queue,
 		false,

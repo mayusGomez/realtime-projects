@@ -20,6 +20,7 @@ func (g *Comment) PostComment(connectionId, video, comment string) error {
 
 	message := domain.CommentMessage{
 		ConnectionId: connectionId,
+		Video:        video,
 		Message:      comment,
 	}
 	err := g.asyncComm.PostMessage(queues, &message)

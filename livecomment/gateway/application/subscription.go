@@ -57,7 +57,7 @@ func (s *SubscriptionService) Unsubscribe(video, connectionId string) {
 	delete(videoSubscription, connectionId)
 }
 
-func (s *SubscriptionService) Publish(video, message string) {
+func (s *SubscriptionService) PublishComment(video, message string) error {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -68,4 +68,6 @@ func (s *SubscriptionService) Publish(video, message string) {
 			log.Println("cannot send message")
 		}
 	}
+
+	return nil
 }
