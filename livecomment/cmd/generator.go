@@ -1,13 +1,14 @@
 package cmd
 
 import (
-	"bufio"
-	"fmt"
+	"errors"
 	"github.com/common-nighthawk/go-figure"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 	"livecomments/commentgenerator"
 	"log"
 	"os"
+	"strings"
 )
 
 type GeneratorCommand struct{}
@@ -15,14 +16,20 @@ type GeneratorCommand struct{}
 func (c *GeneratorCommand) Execute() error {
 	figure.NewColorFigure("Generator server", "doom", "green", false).Print()
 
-	video := os.Getenv("VIDEO")
-	if video == "" {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Print("Enter the videoId: ")
-		video, _ = reader.ReadString('\n')
-	}
+	video := uuid.New().String()
+
 	dispatcherURL := os.Getenv("DISPATCHER_URL")
-	log.Printf("generate requests to URL: %s, video: %s", dispatcherURL, video)
+	if dispatcherURL == "" {
+		return errors.New("no dispatcher URL found in env variable DISPATCHER_URL")
+	}
+
+	gatewayURL := os.Getenv("GATEWAY_URL")
+	if gatewayURL == "" {
+		return errors.New("no gateway URL found in env variable GATEWAY_URL")
+	}
+
+	log.Printf("generate requests to URL: %s, video: %s\n\n", dispatcherURL, strings.TrimSpace(video))
+	log.Printf("please, open this URL in your browser: %s%s", gatewayURL, video)
 
 	commentgenerator.CommentGenerator(dispatcherURL, video)
 
