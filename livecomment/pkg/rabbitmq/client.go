@@ -46,6 +46,7 @@ func (rc *RabbitMQClient) Close() {
 
 func declareQueues(ch *amqp091.Channel, queues []string) error {
 	for _, queue := range queues {
+		log.Printf("declaring queue %q", queue)
 		_, err := ch.QueueDeclare(
 			queue,
 			true,
